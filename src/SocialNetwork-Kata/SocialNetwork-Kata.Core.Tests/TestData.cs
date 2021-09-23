@@ -1,4 +1,5 @@
-﻿using SocialNetwork_Kata.Core.Models;
+﻿using SocialNetwork_Kata.Core.Interfaces;
+using SocialNetwork_Kata.Core.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;

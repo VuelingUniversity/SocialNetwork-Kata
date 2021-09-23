@@ -1,4 +1,5 @@
 using NUnit.Framework;
+using SocialNetwork_Kata.Core.Interfaces;
 using SocialNetwork_Kata.Core.Models;
 using SocialNetwork_Kata.Core.Tools;
 using System;
