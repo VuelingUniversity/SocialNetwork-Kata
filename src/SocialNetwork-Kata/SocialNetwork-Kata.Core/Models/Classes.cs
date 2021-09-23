@@ -29,7 +29,11 @@ namespace SocialNetwork_Kata.Core.Models
         // Returns a list of members by searching all fields in the profile
         public IEnumerable<IMember> FindMember(string search)
         {
-            return null;
+            var member = _memberList.Where(member => member.Profile.City == search
+            || member.Profile.Country == search
+            || member.Profile.Firstname == search
+            || member.Profile.Lastname == search);
+            return member;
         }
 
         // Total number of members currently in the social network
