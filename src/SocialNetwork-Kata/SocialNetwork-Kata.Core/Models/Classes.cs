@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SocialNetwork_Kata.Core.Tools;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,19 +8,22 @@ namespace SocialNetwork_Kata.Core.Models
 {
     public class SocialNetwork : ISocialNetwork
     {
+        private List<Member> _memberList = new List<Member>();
+
         // Adds a new member and returns the added member
         public IMember AddMember(string firstName, string lastName, string city, string country)
         {
             var memberProf = new MemberProfile() { Firstname = firstName, Lastname = lastName, City = city, Country = country };
-            var member = new Member() { Profile = memberProf };
-            MemberCount++;
+            var member = new Member(memberProf);
+            _memberList.Add(member);
             return member;
         }
 
         // Returns the member with the id
         public IMember FindMemberById(int id)
         {
-            return null;
+            var member = _memberList.Where(member => member.Id == id).FirstOrDefault();
+            return member;
         }
 
         // Returns a list of members by searching all fields in the profile
@@ -29,7 +33,7 @@ namespace SocialNetwork_Kata.Core.Models
         }
 
         // Total number of members currently in the social network
-        public int MemberCount { get; set; }
+        public int MemberCount { get { return _memberList.Count(); } }
     }
 
     public class Member : IMember
@@ -38,7 +42,7 @@ namespace SocialNetwork_Kata.Core.Models
         public int Id { get; }
 
         // Member profile
-        public IMemberProfile Profile { get; internal set; }
+        public IMemberProfile Profile { get; }
 
         // List of friends
         public IEnumerable<IMember> Friends { get { return null; } }
@@ -90,6 +94,13 @@ namespace SocialNetwork_Kata.Core.Models
         public IEnumerable<IPost> GetFeed()
         {
             return null;
+        }
+
+        public Member(MemberProfile profile)
+        {
+            this.Id = IdGenerator.GetId<Member>();
+            this.Profile = profile;
+            this.Profile.MemberId = this.Id;
         }
     }
 
