@@ -29,11 +29,11 @@ namespace SocialNetwork_Kata.Core.Models
         // Returns a list of members by searching all fields in the profile
         public IEnumerable<IMember> FindMember(string search)
         {
-            return (IEnumerable<IMember>)_memberList.Find(member => SearchInAllProfileFields(member, search));
+            return _memberList.Where(member => SearchInAllProfileFields(member, search));
         }
 
         // Total number of members currently in the social network
-        public int MemberCount { get { return 0; } }
+        public int MemberCount { get { return _memberList.Count(); } }
 
         public bool SearchInAllProfileFields(IMember member, string search)
         {
@@ -44,6 +44,10 @@ namespace SocialNetwork_Kata.Core.Models
 
     public class Member : IMember
     {
+        private List<IMember> _friends = new List<IMember>();
+        private List<IMember> _pending = new List<IMember>();
+        private List<IPost> _posts = new List<IPost>();
+
         // Id of member. Must be unique and sequential.
         public int Id { get; }
 
@@ -51,13 +55,13 @@ namespace SocialNetwork_Kata.Core.Models
         public IMemberProfile Profile { get; }
 
         // List of friends
-        public IEnumerable<IMember> Friends { get { return null; } }
+        public IEnumerable<IMember> Friends { get { return _friends; } }
 
         // List of pending friend requests
-        public IEnumerable<IMember> Pending { get { return null; } }
+        public IEnumerable<IMember> Pending { get { return _pending; } }
 
         // Members posts
-        public IEnumerable<IPost> Posts { get { return null; } }
+        public IEnumerable<IPost> Posts { get { return _posts; } }
 
         public Member(int id, IMemberProfile profile)
         {
@@ -69,21 +73,27 @@ namespace SocialNetwork_Kata.Core.Models
 
         public void AddFriendRequest(IMember from)
         {
+            _pending.Add(from);
         }
 
         // Confirms a pending friend request
         public void ConfirmFriend(IMember member)
         {
+            _friends.Add(member);
         }
 
         // Removes a pending friend request
         public void RemoveFriendRequest(IMember member)
         {
+            var pendingId = _pending.FindIndex(pending => pending.Id == member.Id);
+            _pending.RemoveAt(pendingId);
         }
 
         // Removes a friend
         public void RemoveFriend(IMember member)
         {
+            var friendId = _friends.FindIndex(friend => friend.Id == member.Id);
+            _friends.RemoveAt(friendId);
         }
 
         // Returns a list of all friends. level - depth (1 - friends, 2 - friends of friends ...)
