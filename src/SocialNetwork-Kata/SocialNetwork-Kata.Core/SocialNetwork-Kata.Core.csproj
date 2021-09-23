@@ -5,8 +5,4 @@
     <RootNamespace>SocialNetwork_Kata.Core</RootNamespace>
   </PropertyGroup>
 
-  <ItemGroup>
-    <Folder Include="Interfaces\" />
-  </ItemGroup>
-
 </Project>
