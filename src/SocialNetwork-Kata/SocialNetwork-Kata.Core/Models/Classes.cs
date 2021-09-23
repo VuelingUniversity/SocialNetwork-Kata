@@ -85,14 +85,14 @@ namespace SocialNetwork_Kata.Core.Models
         // Removes a pending friend request
         public void RemoveFriendRequest(IMember member)
         {
-            var pendingId = _pending.FindIndex(pending => pending.Id == member.Id);
+            int pendingId = _pending.FindIndex(pending => pending.Id == member.Id);
             _pending.RemoveAt(pendingId);
         }
 
         // Removes a friend
         public void RemoveFriend(IMember member)
         {
-            var friendId = _friends.FindIndex(friend => friend.Id == member.Id);
+            int friendId = _friends.FindIndex(friend => friend.Id == member.Id);
             _friends.RemoveAt(friendId);
         }
 
@@ -105,12 +105,16 @@ namespace SocialNetwork_Kata.Core.Models
         // Adds a new post to members feed
         public IPost AddPost(string message)
         {
-            return null;
+            IPost newPost = new Post(this, message);
+            _posts.Add(newPost);
+            return newPost;
         }
 
         // Removes the post with the id
         public void RemovePost(int id)
         {
+            int postId = _posts.FindIndex(post => post.Id == id);
+            _posts.RemoveAt(postId);
         }
 
         // Returns members feed as a list of posts. Should also return posts of friends.
@@ -156,5 +160,14 @@ namespace SocialNetwork_Kata.Core.Models
 
         // Likes for post
         public int Likes { get; set; }
+
+        public Post(IMember member, string message)
+        {
+            Id = IdGenerator.GetId<IPost>();
+            Member = member;
+            Message = message;
+            Date = DateTime.Now;
+            Likes = 0;
+        }
     }
 }
