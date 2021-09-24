@@ -1,4 +1,5 @@
 ﻿using SocialNetwork_Kata.Core.Interfaces;
+using SocialNetwork_Kata.Core.Tools;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -88,19 +89,35 @@ namespace SocialNetwork_Kata.Core.Models
         // Adds a new post to members feed
         public IPost AddPost(string message)
         {
-            return null;
+            var post = new Post
+            {
+                Id = IdGenerator.GetId<IPost>(),
+                Date = DateTime.Now,
+                Member = this,
+                Message = message
+            };
+            _posts.Add(post);
+            return post;
         }
 
         // Removes the post with the id
         public void RemovePost(int id)
         {
-
+            var toDeletePost = _posts.FirstOrDefault(p => p.Id == id);
+            _posts.Remove(toDeletePost);
         }
 
         // Returns members feed as a list of posts. Should also return posts of friends.
         public IEnumerable<IPost> GetFeed()
         {
-            return null;
+            var posts = new List<IPost>();
+            posts.AddRange(_posts);
+            foreach (var f in _friends)
+            {
+                posts.AddRange(f.Posts);
+            }
+
+            return posts.OrderBy(p => p.Id).ToList();
         }
 
         public static IMember CreateMember(int id, string name, string lastName, string city, string country)
