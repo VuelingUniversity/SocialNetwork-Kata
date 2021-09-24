@@ -47,7 +47,15 @@ namespace SocialNetwork_Kata.Core.Models
         // Confirms a pending friend request
         public void ConfirmFriend(IMember member)
         {
-
+            var friend = _pending.FirstOrDefault(f => f.Id == member.Id);
+            if (friend == null || member.Id == Id)
+                return;
+            if (_pending.Any(m => m.Id == member.Id))
+            {
+                _pending.Remove(friend);
+                _friends.Add(friend);
+                friend.ConfirmFriend(this);
+            }
         }
 
         // Removes a pending friend request
@@ -64,7 +72,11 @@ namespace SocialNetwork_Kata.Core.Models
         // Removes a friend
         public void RemoveFriend(IMember member)
         {
-
+            var friend = _friends.FirstOrDefault(f => f.Id == member.Id);
+            if (friend == null)
+                return;
+            _friends.Remove(friend);
+            friend.RemoveFriend(this);
         }
 
         // Returns a list of all friends. level - depth (1 - friends, 2 - friends of friends ...)
